@@ -68,10 +68,7 @@ export default function PreferencesPage() {
           <label className="field">
             <span>Currency</span>
             <select name="currency" value={form.currency || 'INR'} onChange={handleChange}>
-              <option value="INR">INR</option>
-              <option value="USD">USD</option>
-              <option value="EUR">EUR</option>
-              <option value="GBP">GBP</option>
+              <option value="INR">Indian Rupee (₹)</option>
             </select>
           </label>
 

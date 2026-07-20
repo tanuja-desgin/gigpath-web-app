@@ -4,7 +4,7 @@ import SurfaceCard from '../../components/ui/SurfaceCard'
 import { useAppContext } from '../../context/AppContext'
 
 export default function ProfilePage() {
-  const { profile, preferences, security, profileLoading } = useAppContext()
+  const { profile, preferences, profileLoading } = useAppContext()
 
   if (profileLoading) {
     return (
@@ -68,23 +68,6 @@ export default function ProfilePage() {
             <div>
               <span>Accent theme</span>
               <strong>{profile.accentTheme || preferences.accentTheme}</strong>
-            </div>
-          </div>
-        </SurfaceCard>
-
-        <SurfaceCard>
-          <div className="section-heading">
-            <h2>Security snapshot</h2>
-            <p>{profile.bio}</p>
-          </div>
-          <div className="detail-grid detail-grid--compact">
-            <div>
-              <span>MFA</span>
-              <strong>{security.twoFactorEnabled ? 'Enabled' : 'Disabled'}</strong>
-            </div>
-            <div>
-              <span>Session alerts</span>
-              <strong>{security.sessionAlertsEnabled ? 'Enabled' : 'Disabled'}</strong>
             </div>
           </div>
         </SurfaceCard>

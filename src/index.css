@@ -1571,10 +1571,11 @@ h3 {
   .simple-list__item {
     padding: 16px;
   }
+} /* Close max-width: 760px */
 
-  /* 6. Comprehensive Mobile Specific UI Fixes (Max 768px) */
-  @media (max-width: 768px) {
-    .desktop-only {
+/* 6. Comprehensive Mobile Specific UI Fixes (Max 768px) */
+@media (max-width: 768px) {
+  .desktop-only {
       display: none !important;
     }
     
@@ -1739,6 +1740,7 @@ h3 {
     }
   }
 
+@media (max-width: 760px) { /* Re-open max-width: 760px for the rest of the file */
   .goal-row__copy {
     flex-direction: column;
     gap: 10px;

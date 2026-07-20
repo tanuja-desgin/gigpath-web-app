@@ -6,10 +6,21 @@ import SurfaceCard from '../../components/ui/SurfaceCard'
 import { useAppContext } from '../../context/AppContext'
 import { getGoalProgress } from '../../utils/analytics'
 import { formatCurrency, formatDate } from '../../utils/formatters'
+import { deleteGoal } from '../../services/firestoreService'
 
 export default function GoalsListPage() {
   const { t } = useTranslation()
-  const { goals, authLoading, dataLoading } = useAppContext()
+  const { goals, authLoading, dataLoading, session } = useAppContext()
+
+  const handleDeleteGoal = async (id) => {
+    if (window.confirm(t('goals.confirmDeleteGoal', 'Are you sure you want to delete this goal?'))) {
+      try {
+        await deleteGoal(session?.uid, id)
+      } catch (err) {
+        console.error("Failed to delete goal", err)
+      }
+    }
+  }
 
   if (authLoading || dataLoading) {
     return (
@@ -81,6 +92,9 @@ export default function GoalsListPage() {
               <Link className="button button--ghost" to={`/app/goals/${goal.id}/progress`}>
                 {t('sidebar.goals_goal_progress')}
               </Link>
+              <button type="button" className="button button--ghost text-negative" onClick={() => handleDeleteGoal(goal.id)}>
+                {t('common.delete', 'Delete')}
+              </button>
             </div>
           </SurfaceCard>
         ))}

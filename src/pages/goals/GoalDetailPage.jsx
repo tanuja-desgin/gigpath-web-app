@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import PageHeader from '../../components/ui/PageHeader'
 import ProgressBar from '../../components/ui/ProgressBar'
@@ -6,12 +6,25 @@ import SurfaceCard from '../../components/ui/SurfaceCard'
 import { useAppContext } from '../../context/AppContext'
 import { getDaysUntil, getGoalProgress } from '../../utils/analytics'
 import { formatCurrency, formatDate } from '../../utils/formatters'
+import { deleteGoal } from '../../services/firestoreService'
 
 export default function GoalDetailPage() {
   const { t } = useTranslation()
   const { goalId } = useParams()
-  const { goals } = useAppContext()
+  const navigate = useNavigate()
+  const { goals, session } = useAppContext()
   const goal = goals.find((entry) => entry.id === goalId)
+
+  const handleDeleteGoal = async () => {
+    if (window.confirm(t('goals.confirmDeleteGoal', 'Are you sure you want to delete this goal?'))) {
+      try {
+        await deleteGoal(session?.uid, goalId)
+        navigate('/app/goals')
+      } catch (err) {
+        console.error("Failed to delete goal", err)
+      }
+    }
+  }
 
   if (!goal) {
     return (
@@ -44,6 +57,9 @@ export default function GoalDetailPage() {
             <Link className="button button--ghost" to={`/app/goals/${goal.id}/edit`}>
               {t('dashboard.editGoal')}
             </Link>
+            <button type="button" className="button button--ghost text-negative" onClick={handleDeleteGoal}>
+              {t('common.delete', 'Delete')}
+            </button>
             <Link className="button button--primary" to={`/app/goals/${goal.id}/progress`}>
               {t('sidebar.goals_goal_progress')}
             </Link>

@@ -7,11 +7,22 @@ import SurfaceCard from '../../components/ui/SurfaceCard'
 import { useAppContext } from '../../context/AppContext'
 import { sortTransactions } from '../../utils/analytics'
 import { formatCurrency, formatDate } from '../../utils/formatters'
+import { deleteTransaction } from '../../services/firestoreService'
 
 export default function TransactionListPage() {
   const { t } = useTranslation()
-  const { transactions, totals, authLoading, dataLoading } = useAppContext()
+  const { transactions, totals, authLoading, dataLoading, session } = useAppContext()
   const [filter, setFilter] = useState('all')
+
+  const handleDelete = async (id) => {
+    if (window.confirm(t('finance.confirmDeleteTransaction', 'Are you sure you want to delete this transaction?'))) {
+      try {
+        await deleteTransaction(session?.uid, id)
+      } catch (err) {
+        console.error("Failed to delete transaction", err)
+      }
+    }
+  }
 
   if (authLoading || dataLoading) {
     return (
@@ -119,6 +130,7 @@ export default function TransactionListPage() {
                   <td className="table-actions">
                     <Link to={`/app/finance/transactions/${transaction.id}`}>{t('finance.detail', 'Detail')}</Link>
                     <Link to={`/app/finance/transactions/${transaction.id}/edit`}>{t('common.edit', 'Edit')}</Link>
+                    <button type="button" className="button button--ghost text-negative" style={{ padding: '0 8px', marginLeft: '8px' }} onClick={() => handleDelete(transaction.id)}>{t('common.delete', 'Delete')}</button>
                   </td>
                 </tr>
               ))}
@@ -144,6 +156,7 @@ export default function TransactionListPage() {
                 <div className="mobile-transaction-actions">
                   <Link className="button button--ghost" style={{ minHeight: '32px', height: '32px', fontSize: '0.8rem', padding: '0 12px' }} to={`/app/finance/transactions/${transaction.id}`}>{t('finance.detail', 'Detail')}</Link>
                   <Link className="button button--ghost" style={{ minHeight: '32px', height: '32px', fontSize: '0.8rem', padding: '0 12px' }} to={`/app/finance/transactions/${transaction.id}/edit`}>{t('common.edit', 'Edit')}</Link>
+                  <button type="button" className="button button--ghost text-negative" style={{ minHeight: '32px', height: '32px', fontSize: '0.8rem', padding: '0 12px' }} onClick={() => handleDelete(transaction.id)}>{t('common.delete', 'Delete')}</button>
                 </div>
               </div>
             </div>

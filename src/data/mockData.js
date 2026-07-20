@@ -90,7 +90,6 @@ export const sidebarSections = [
     children: [
       { label: 'View Profile', to: '/app/profile' },
       { label: 'Edit Profile', to: '/app/profile/edit' },
-      { label: 'Security', to: '/app/profile/security' },
       { label: 'Preferences', to: '/app/profile/preferences' },
       { label: 'Notifications', to: '/app/notifications' },
       { label: 'Help', to: '/app/profile/help' },

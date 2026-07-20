@@ -4,10 +4,21 @@ import PageHeader from '../../components/ui/PageHeader'
 import SurfaceCard from '../../components/ui/SurfaceCard'
 import { useAppContext } from '../../context/AppContext'
 import { formatCurrency, formatDate } from '../../utils/formatters'
+import { deleteRecurringExpense } from '../../services/firestoreService'
 
 export default function RecurringExpensesPage() {
   const { t } = useTranslation()
-  const { recurringExpenses, authLoading, dataLoading } = useAppContext()
+  const { recurringExpenses, authLoading, dataLoading, session } = useAppContext()
+
+  const handleDeleteExpense = async (id) => {
+    if (window.confirm(t('finance.confirmDeleteRecurring', 'Are you sure you want to delete this recurring expense?'))) {
+      try {
+        await deleteRecurringExpense(session?.uid, id)
+      } catch (err) {
+        console.error("Failed to delete recurring expense", err)
+      }
+    }
+  }
 
   if (authLoading || dataLoading) {
     return (
@@ -60,7 +71,10 @@ export default function RecurringExpensesPage() {
                   {t(expense.category)} • {t(expense.frequency)} • {t('finance.due', 'due')} {formatDate(expense.nextCharge)}
                 </span>
               </div>
-              <strong>{formatCurrency(expense.amount)}</strong>
+              <div>
+                <strong style={{ display: 'block', marginBottom: '4px' }}>{formatCurrency(expense.amount)}</strong>
+                <button type="button" className="button button--ghost text-negative" style={{ padding: '0', minHeight: 'auto', fontSize: '0.8rem' }} onClick={() => handleDeleteExpense(expense.id)}>{t('common.delete', 'Delete')}</button>
+              </div>
             </div>
           ))}
         </div>

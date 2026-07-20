@@ -56,6 +56,18 @@ export const updateTransaction = async (uid, transactionId, transactionData) => 
   }
 };
 
+export const deleteTransaction = async (uid, transactionId) => {
+  console.log("Deleting transaction:", transactionId, "for UID:", uid);
+  try {
+    const transactionRef = doc(db, "users", uid, "transactions", transactionId);
+    await deleteDoc(transactionRef);
+    console.log("Firestore Success: Transaction deleted");
+  } catch (error) {
+    console.error("Firestore Failure: Error deleting transaction:", error);
+    throw error;
+  }
+};
+
 export const subscribeToTransactions = (uid, callback) => {
   console.log("Subscribing to transactions for UID:", uid);
   const transactionsRef = collection(db, "users", uid, "transactions");
@@ -103,18 +115,21 @@ export const addGoal = async (uid, goalData) => {
 };
 
 export const updateGoal = async (uid, goalId, goalData) => {
+  console.log("Updating goal:", goalId, "for UID:", uid);
   try {
     const goalRef = doc(db, "users", uid, "goals", goalId);
-    const firestoreData = {
-      goalTitle: goalData.title,
-      purpose: goalData.purpose,
-      targetAmount: goalData.targetAmount,
-      alreadySaved: goalData.savedAmount,
-      deadline: goalData.deadline,
-      monthlyContribution: goalData.monthlyContribution,
-      priority: goalData.priority
-    };
+    // Same mapping for update
+    const firestoreData = {};
+    if (goalData.title !== undefined) firestoreData.goalTitle = goalData.title;
+    if (goalData.purpose !== undefined) firestoreData.purpose = goalData.purpose;
+    if (goalData.targetAmount !== undefined) firestoreData.targetAmount = goalData.targetAmount;
+    if (goalData.savedAmount !== undefined) firestoreData.alreadySaved = goalData.savedAmount;
+    if (goalData.deadline !== undefined) firestoreData.deadline = goalData.deadline;
+    if (goalData.monthlyContribution !== undefined) firestoreData.monthlyContribution = goalData.monthlyContribution;
+    if (goalData.priority !== undefined) firestoreData.priority = goalData.priority;
+
     await updateDoc(goalRef, firestoreData);
+    console.log("Firestore Success: Goal updated");
   } catch (error) {
     console.error("Firestore Failure: Error updating goal:", error);
     throw error;
@@ -122,10 +137,11 @@ export const updateGoal = async (uid, goalId, goalData) => {
 };
 
 export const deleteGoal = async (uid, goalId) => {
+  console.log("Deleting goal:", goalId, "for UID:", uid);
   try {
     const goalRef = doc(db, "users", uid, "goals", goalId);
-    const { deleteDoc } = await import("firebase/firestore");
     await deleteDoc(goalRef);
+    console.log("Firestore Success: Goal deleted");
   } catch (error) {
     console.error("Firestore Failure: Error deleting goal:", error);
     throw error;

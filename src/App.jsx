@@ -33,7 +33,6 @@ import EditProfilePage from './pages/profile/EditProfilePage'
 import HelpPage from './pages/profile/HelpPage'
 import PreferencesPage from './pages/profile/PreferencesPage'
 import ProfilePage from './pages/profile/ProfilePage'
-import SecurityPage from './pages/profile/SecurityPage'
 import SettingsPage from './pages/profile/SettingsPage'
 import NotificationsPage from './pages/profile/NotificationsPage'
 import NotFoundPage from './pages/shared/NotFoundPage'
@@ -114,7 +113,6 @@ export default function App() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="profile/edit" element={<EditProfilePage />} />
             <Route path="profile/settings" element={<SettingsPage />} />
-            <Route path="profile/security" element={<SecurityPage />} />
             <Route path="profile/preferences" element={<PreferencesPage />} />
             <Route path="profile/help" element={<HelpPage />} />
             
