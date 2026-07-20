@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # GigPath – Smart Financial Guidance Platform for Gig Workers With AI Chats
 
 ## Technologies Used
@@ -136,3 +137,6 @@ Copy `app-debug.apk` to an Android phone and install it.
 ### Google Sign-In
 
 The project already includes Firebase configuration (`google-services.json`). Ensure Firebase Authentication and Firestore are enabled in the Firebase project.
+=======
+# gigpath-web-app
+>>>>>>> 8d36b603d04de6605cef82cac0258f5dcf345686
