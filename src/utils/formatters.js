@@ -1,0 +1,106 @@
+import { safeDate } from './dateUtils';
+
+let currentCurrency = 'INR';
+let currentLocale = 'en-IN';
+
+export function setGlobalCurrency(currency) {
+  const validCurrencies = ['INR', 'USD', 'EUR', 'GBP'];
+  if (!currency || !validCurrencies.includes(currency)) {
+    console.warn(`Invalid currency code received: "${currency}". Falling back to "INR".`);
+    currentCurrency = 'INR';
+  } else {
+    currentCurrency = currency;
+  }
+  currentLocale = currentCurrency === 'USD' ? 'en-US' : currentCurrency === 'EUR' ? 'en-DE' : currentCurrency === 'GBP' ? 'en-GB' : 'en-IN';
+}
+
+export function formatCurrency(value) {
+  return new Intl.NumberFormat(currentLocale, {
+    style: 'currency',
+    currency: currentCurrency,
+    maximumFractionDigits: 0,
+  }).format(Number(value) || 0)
+}
+
+export function formatCurrencyCompact(value) {
+  return new Intl.NumberFormat(currentLocale, {
+    style: 'currency',
+    currency: currentCurrency,
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(Number(value) || 0)
+}
+
+export function formatDate(value, options = {}) {
+  try {
+    const date = safeDate(value);
+    if (!date) {
+      console.warn("Invalid date for formatDate:", value);
+      return "Unknown";
+    }
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      ...options,
+    }).format(date)
+  } catch (error) {
+    console.error("formatDate error", error, value);
+    return "Unknown";
+  }
+}
+
+export function formatMonthLabel(value) {
+  try {
+    const date = safeDate(value);
+    if (!date) {
+      console.warn("Invalid month label date:", value);
+      return "Unknown";
+    }
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric"
+    });
+  } catch (error) {
+    console.error("formatMonthLabel error", error, value);
+    return "Unknown";
+  }
+}
+
+export function formatPercent(value) {
+  return `${Math.round(Number(value) || 0)}%`
+}
+
+export function getInitials(name) {
+  return (name || '')
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+}
+
+export function formatTimeAgo(dateString) {
+  if (!dateString) return '';
+  try {
+    const date = safeDate(dateString);
+    if (!date) return '';
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    
+    if (seconds < 60) return `${seconds} seconds ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days} day${days > 1 ? 's' : ''} ago`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months} month${months > 1 ? 's' : ''} ago`;
+    return formatDate(dateString);
+  } catch (error) {
+    console.error("formatTimeAgo error", error, dateString);
+    return '';
+  }
+}
+
